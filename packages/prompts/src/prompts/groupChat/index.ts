@@ -1,4 +1,4 @@
-import { ChatMessage } from '@/types/index';
+import { UIChatMessage } from '@lobechat/types';
 
 export interface GroupMemberInfo {
   id: string;
@@ -30,7 +30,7 @@ export const buildGroupChatSystemPrompt = ({
   baseSystemRole?: string;
   groupMembers: GroupMemberInfo[];
   instruction?: string;
-  messages: ChatMessage[];
+  messages: UIChatMessage[];
   targetId?: string;
 }): string => {
   const membersTag = buildGroupMembersTag(groupMembers);

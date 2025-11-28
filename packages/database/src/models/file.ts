@@ -1,7 +1,6 @@
+import { FilesTabs, QueryFileListParams, SortType } from '@lobechat/types';
 import { and, asc, count, desc, eq, ilike, inArray, like, notExists, or, sum } from 'drizzle-orm';
 import type { PgTransaction } from 'drizzle-orm/pg-core';
-
-import { FilesTabs, QueryFileListParams, SortType } from '@/types/files';
 
 import {
   FileItem,
@@ -26,8 +25,22 @@ export class FileModel {
     this.db = db;
   }
 
+  /**
+   * Get file by ID without userId filter (public access)
+   * Use this for scenarios like file proxy where file should be accessible by ID alone
+   *
+   * @param db - Database instance
+   * @param id - File ID
+   * @returns File record or undefined
+   */
+  static async getFileById(db: LobeChatDatabase, id: string): Promise<FileItem | undefined> {
+    return db.query.files.findFirst({
+      where: eq(files.id, id),
+    });
+  }
+
   create = async (
-    params: Omit<NewFile, 'id' | 'userId'> & { knowledgeBaseId?: string },
+    params: Omit<NewFile, 'id' | 'userId'> & { id?: string; knowledgeBaseId?: string },
     insertToGlobalFiles?: boolean,
     trx?: Transaction,
   ) => {
